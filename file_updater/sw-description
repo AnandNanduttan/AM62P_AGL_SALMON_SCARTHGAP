@@ -1,0 +1,13 @@
+software =
+{
+    version = "1.0";
+    hardware-compatibility: [ "1.0" ]; // Added this line
+
+    files: (
+        {
+            filename = "my-file.conf";
+            path = "/home/my-file.conf";
+            
+        }
+    );
+}

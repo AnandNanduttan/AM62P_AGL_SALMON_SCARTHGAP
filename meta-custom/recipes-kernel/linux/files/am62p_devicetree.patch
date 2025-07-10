@@ -1,0 +1,291 @@
+--- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
+@@ -170,10 +170,47 @@
+ 	       regulator-always-on;
+ 	       regulator-boot-on;
+ 	};
++		
++	vdd_mmc2: regulator-5 {
++		
++	 	bootph-all;
++	 	compatible = "regulator-fixed";
++	 	regulator-name = "vdd_mmc2";
++	 	regulator-min-microvolt = <3300000>;
++	 	regulator-max-microvolt = <3300000>;
++	 	regulator-boot-on;
++	 	enable-active-high;
++	 	gpio = <&main_gpio0 71 GPIO_ACTIVE_HIGH>;
++		//pinctrl-names = "default";
++		//pinctrl-0 = <&wlan_en_default_pins>;
++	 };
++	 
++	wl_lt_en: regulator-6 {
++		bootph-all;
++		compatible = "regulator-fixed";
++		regulator-name = "wl_lt_en";
++		vin-supply = <&vcc_3v3_main>;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
++		enable-active-high;
++		gpios = <&exp2 8 GPIO_ACTIVE_HIGH>;
++	};
++	
++	uart_buf_en: regulator-9 {
++		compatible = "regulator-fixed";
++		regulator-name = "uart_buf_en";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		gpios = <&exp1 6 GPIO_ACTIVE_LOW>;
++		regulator-always-on;
++	};
++	
+ 	leds {
+ 		compatible = "gpio-leds";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&usr_led_pins_default>;
++		status = "disabled";
+ 
+ 		led-0 {
+ 			label = "am62-sk:green:heartbeat";
+@@ -242,10 +279,14 @@
+ 
+ &main_gpio0 {
+ 	bootph-all;
++	pinctrl-names = "default";
++	pinctrl-0 = <&wlan_en_default_pins>, <&usr_led_pins_default>;
++	status = "okay";
+ };
+ 
+ &main_gpio1 {
+ 	bootph-all;
++	status = "okay";
+ };
+ 
+ &main_pmx0 {
+@@ -298,7 +339,7 @@
+ 	main_mmc1_pins_default: main-mmc1-default-pins {
+ 		pinctrl-single,pins = <
+ 			AM62PX_IOPAD(0x023c, PIN_INPUT, 0) /* (H20) MMC1_CMD */
+-			AM62PX_IOPAD(0x0234, PIN_OUTPUT, 0) /* (J24) MMC1_CLK */
++			AM62PX_IOPAD(0x0234, PIN_INPUT, 0) /* (J24) MMC1_CLK */
+ 			AM62PX_IOPAD(0x0230, PIN_INPUT, 0) /* (H21) MMC1_DAT0 */
+ 			AM62PX_IOPAD(0x022c, PIN_INPUT_PULLUP, 0) /* (H23) MMC1_DAT1 */
+ 			AM62PX_IOPAD(0x0228, PIN_INPUT_PULLUP, 0) /* (H22) MMC1_DAT2 */
+@@ -308,15 +349,15 @@
+ 		bootph-all;
+ 	};
+ 
+-	main_mmc2_pins_default: main-mmc2-default-pins {
++	main_mmc2_default_pins: main-mmc2-default-pins {
+ 		pinctrl-single,pins = <
+-			AM62PX_IOPAD(0x0120, PIN_INPUT, 0) /* (K24) MMC2_CMD */
+-			AM62PX_IOPAD(0x0118, PIN_OUTPUT, 0) /* (K21) MMC2_CLK */
+-			AM62PX_IOPAD(0x011C, PIN_INPUT, 0) /* () MMC2_CLKLB */
+-			AM62PX_IOPAD(0x0114, PIN_INPUT, 0) /* (K23) MMC2_DAT0 */
+-			AM62PX_IOPAD(0x0110, PIN_INPUT_PULLUP, 0) /* (K22) MMC2_DAT1 */
+-			AM62PX_IOPAD(0x010c, PIN_INPUT_PULLUP, 0) /* (L20) MMC2_DAT2 */
+-			AM62PX_IOPAD(0x0108, PIN_INPUT_PULLUP, 0) /* (L21) MMC2_DAT3 */
++			AM62PX_IOPAD(0x0120, PIN_INPUT, 0) 	/* (K24) MMC2_CMD */
++			AM62PX_IOPAD(0x0118, PIN_OUTPUT, 0)	/* (K21) MMC2_CLK */
++			AM62PX_IOPAD(0x0114, PIN_INPUT, 0) 	/* (K23) MMC2_DAT0 */
++			AM62PX_IOPAD(0x0110, PIN_INPUT, 0) 	/* (K22) MMC2_DAT1 */
++			AM62PX_IOPAD(0x010c, PIN_INPUT, 0) 	/* (L20) MMC2_DAT2 */
++			AM62PX_IOPAD(0x0108, PIN_INPUT, 0) 	/* (L21) MMC2_DAT3 */
++			AM62PX_IOPAD(0x011C, PIN_INPUT, 0)	/* () MMC2_CLKLB */
+ 		>;
+ 		bootph-all;
+ 	};
+@@ -381,7 +422,8 @@
+ 		>;
+ 	};
+ 
+-	main_wlirq_pins_default: main-wlirq-default-pins {
++	main_wlirq_default_pins: main-wlirq-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			AM62PX_IOPAD(0x0128, PIN_INPUT, 7) /* (K25) MMC2_SDWP.GPIO0_72 */
+ 		>;
+@@ -417,9 +459,9 @@
+ 		bootph-all;
+ 	};
+ 
+-	wlan_en_pins_default: wlan-en-default-pins {
++	wlan_en_default_pins: wlan-en-default-pins {
+ 		pinctrl-single,pins = <
+-			AM62PX_IOPAD(0x0124, PIN_INPUT, 7) /* (J25) MMC2_SDCD.GPIO0_71 */
++			AM62PX_IOPAD(0x0124, PIN_OUTPUT_PULLUP, 7) /* (J25) MMC2_SDCD.GPIO0_71 */
+ 		>;
+ 	};
+ 
+@@ -528,6 +570,13 @@
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&main_gpio1_ioexp_intr_pins_default>;
+ 		bootph-all;
++		
++		en_rpi_3v3 {
++			gpio-hog;
++			gpios = <5 GPIO_ACTIVE_HIGH>;
++			output-high;
++			line-name = "EXP_PS_3V3_EN";
++		};
+ 	};
+ 
+ 	exp2: gpio@23 {
+@@ -544,9 +593,15 @@
+ 				   "TP4", "TP7",
+ 				   "TP5", "TP8",
+ 				   "SoC_I2C2_MCAN_SEL", "GPIO_HDMI_RSTn",
+-				   "GPIO_CPSW2_RST", "GPIO_CPSW1_RST",
++				   "GPIO_CPSW1_RST", "GPIO_CPSW2_RST",
+ 				   "GPIO_OLDI_RSTn", "GPIO_AUD_RSTn",
+ 				   "GPIO_eMMC_RSTn", "SoC_WLAN_SDIO_RST";
++		en_rpi_5v5 {
++			gpio-hog;
++			gpios = <1 GPIO_ACTIVE_HIGH>;
++			output-high;
++			line-name = "EXP_PS_5V0_EN";
++		};
+ 	};
+ 
+ 	sii9022: bridge-hdmi@3b {
+@@ -610,6 +665,38 @@
+ 	bootph-all;
+ };
+ 
++&sdhci2 {
++	status = "okay";
++	vmmc-supply = <&vdd_mmc2>;
++	vqmmc-supply = <&wl_lt_en>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mmc2_default_pins>, <&wifi_32k_clk>;
++	bus-width = <4>;
++	non-removable;
++	ti,fails-without-test-cd;
++	cap-power-off-card;
++	keep-power-in-suspend;
++	ti,driver-strength-ohm = <50>;
++	assigned-clocks = <&k3_clks 157 174> , <&k3_clks 226 0>;
++	assigned-clock-parents =  <&k3_clks 157 175> , <&k3_clks 226 5>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++
++	
++	brcmf: brcmf@2 {
++		compatible = "cypress,cyw4373-fmac", "brcm,bcm4329-fmac";
++		reg = <2>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&main_wlirq_default_pins>;
++		interrupt-parent = <&main_gpio0>;
++		interrupts = <72 IRQ_TYPE_EDGE_FALLING>;
++		//interrupt-names = "host-wake";
++	};
++
++
++};
++
+ &cpsw3g {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_rgmii1_pins_default>,
+@@ -725,39 +812,34 @@
+ 			bootph-all;
+ 
+ 			partition@0 {
+-				label = "ospi.tiboot3";
+-				reg = <0x00 0x80000>;
++			    label = "ospi.tiboot3";
++			    reg = <0x0 0x80000>;
+ 			};
+ 
+ 			partition@80000 {
+-				label = "ospi.tispl";
+-				reg = <0x80000 0x200000>;
++			    label = "ospi.tispl";
++			    reg = <0x80000 0x200000>;
+ 			};
+ 
+ 			partition@280000 {
+-				label = "ospi.u-boot";
+-				reg = <0x280000 0x400000>;
+-			};
+-
+-			partition@680000 {
+-				label = "ospi.env";
+-				reg = <0x680000 0x40000>;
++			    label = "ospi.u-boot";
++			    reg = <0x280000 0x200000>;
+ 			};
+ 
+-			partition@6c0000 {
+-				label = "ospi.env.backup";
+-				reg = <0x6c0000 0x40000>;
++			partition@240000 {
++			    label = "ospi.hsm";
++			    reg = <0x240000 0x200000>;  
+ 			};
+ 
+ 			partition@800000 {
+-				label = "ospi.rootfs";
+-				reg = <0x800000 0x37c0000>;
++			    label = "ospi.mcu-baremetal";
++			    reg = <0x800000 0x800000>;
+ 			};
+ 
+-			partition@3fc0000 {
+-				label = "ospi.phypattern";
+-				reg = <0x3fc0000 0x40000>;
+-				bootph-all;
++			partition@1200000 {
++			    label = "ospi.linux";
++			    reg = <0x1200000 0x1000000>;
++			    bootph-all;
+ 			};
+ 		};
+ 	};
+@@ -811,8 +893,29 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_uart1_pins_default>;
+ 	/* Main UART1 is used by TIFS firmware */
+-	status = "reserved";
+-	bootph-all;
++	/*status = "reserved";
++	bootph-all;*/
++	
++	status = "okay";
++	
++	
++	bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		shutdown-gpios = <&exp2 0 GPIO_ACTIVE_HIGH>;
++		host-wakeup-gpios = <&exp1 13 GPIO_ACTIVE_HIGH>;
++	};
++	
++	/*bluetooth: bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		pinctrl-names = "default";
++		pinctrl-0 = <&exp2 0>;
++		interrupt-names = "host-wakeup";
++		interrupt-parent = <&exp1>;
++		interrupts = <11 IRQ_TYPE_EDGE_BOTH>;
++		shutdown-gpios = <&exp2 0 GPIO_ACTIVE_HIGH>;
++	};*/
++	
++	
+ };
+ 
+ &mcu_pmx0 {
+@@ -838,6 +941,13 @@
+ 		       AM62PX_MCU_IOPAD(0x050, PIN_INPUT, 0) /* (C11) WKUP_I2C0_SDA */
+ 	       >;
+ 	};
++	
++	wifi_32k_clk: mcu-clk-out-pins-default {
++		pinctrl-single,pins = <
++			AM62PX_MCU_IOPAD(0x0084, PIN_OUTPUT, 1) /* (F13) WKUP_CLKOUT0 */
++			//AM62PX_MCU_IOPAD(0x0080, PIN_OUTPUT_PULLUP, 0) /* (B9) PMIC_LPM_EN0 */
++		>;
++	};
+ 
+ };
+ 

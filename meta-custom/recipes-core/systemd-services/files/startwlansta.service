@@ -1,0 +1,16 @@
+[Unit]
+Description=startwlansta
+After=network.target systemd-logind.service
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/share/murata_wifi
+ExecStart=/usr/share/murata_wifi/connect.sh
+ExecStop=/usr/share/murata_wifi/sta_stop.sh
+StandardOutput=journal+console
+RemainAfterExit=yes
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
