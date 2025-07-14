@@ -1,0 +1,13 @@
+software = {
+    version = "1.0";
+    hardware-compatibility: [ "1.0" ]
+
+    files: (
+        {
+            filename = "gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang.appimage.hs_fs";
+            path = "/home/gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang.appimage.hs_fs";          
+            //type = "raw";                 
+            //sha256 = "0457a0d864d37a64cab98f3ea157d093155d19789537e317b2677b85089411a8"; 
+        }
+    );
+};
